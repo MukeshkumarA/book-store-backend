@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: BookStoreBackend
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        boot:
+          allow_jdbc_metadata_access: false
+      show_sql: true
+server:
+  port: 8081
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+      enabled: true
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.hibernate: DEBUG
+
+
+# Environment Variable for Frontend URL
+frontend-url: ${FRONTEND_URL}
