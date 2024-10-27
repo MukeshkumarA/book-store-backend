@@ -4,6 +4,7 @@ package com.mk.bookstorebackend.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -22,6 +23,7 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     @JsonIgnoreProperties("cartItems")
+    @ToString.Exclude // Prevent toString recursion
     private Cart cart;
 
     public void setQuantity(int quantity) {

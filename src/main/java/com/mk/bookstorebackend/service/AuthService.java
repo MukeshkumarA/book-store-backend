@@ -8,6 +8,7 @@ import com.mk.bookstorebackend.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,14 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
+//        var userBuilder = User.builder()
+//                .firstName(registerRequest.getFirstName())
+//                .lastName(registerRequest.getLastName())
+//                .email(registerRequest.getEmail())
+//                .password(passwordEncoder.encode(registerRequest.getPassword()))
+//                .role(registerRequest.getRole())
+//                .build();
+
         var user = User.builder()
                 .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
@@ -28,6 +37,11 @@ public class AuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(registerRequest.getRole())
                 .build();
+
+        // Set address and phone number if present
+        registerRequest.getAddress().ifPresent(user::setAddress);
+        registerRequest.getPhoneNumber().ifPresent(user::setPhoneNumber);
+
 
         var savedUser = userService.save(user);
         String jwtToken = jwtService.generateToken(user);
@@ -49,7 +63,7 @@ public class AuthService {
         //Verify whether user present in db
         //generateToken
         //Return the token
-        authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
@@ -62,6 +76,7 @@ public class AuthService {
                 .accessToken(jwtToken)
                 .userId(user.getId())  // Including userId
                 .role(user.getRole())
+                .firstName(user.getFirstName())
                 .build();
     }
 }

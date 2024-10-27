@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookServiceImplementation implements BookService {
 
-    @Autowired
     private final BookRepository bookRepository;
 
     @Override

@@ -25,7 +25,22 @@ public class CartServiceImplementation implements CartService {
             return newCart;
         });
 
-        cart.addItem(cartItem);
+        CartItem finalCartItem = cartItem;
+        Optional<CartItem> existingCartItem = cart.getCartItems().stream().
+                filter(item -> item.getBookId().equals(finalCartItem.getBookId())).
+                findFirst();
+
+        if(existingCartItem.isPresent()) {
+            // If item exists, increment the quantity and update total price
+            CartItem item = existingCartItem.get();
+            item.setQuantity(item.getQuantity() + cartItem.getQuantity());
+            item.setTotalPrice(item.getQuantity() * item.getPrice());
+        }
+        else {
+            cartItem = cartItemRepository.save(cartItem);
+            cart.addItem(cartItem);
+        }
+//        save the cart
         cartRepository.save(cart);
     }
 
@@ -42,6 +57,8 @@ public class CartServiceImplementation implements CartService {
             CartItem item = existingCartItem.get();
             item.setQuantity(cartItem.getQuantity());
             item.setTotalPrice(cartItem.getQuantity() * cartItem.getPrice());
+            // Save the updated CartItem
+            cartItemRepository.save(item);
             cartRepository.save(cart);
         } else {
             throw new RuntimeException("CartItem not found in cart");
@@ -50,11 +67,26 @@ public class CartServiceImplementation implements CartService {
 
     @Override
     public void removeFromCart(Long userId, Long bookId) {
+        if (bookId == null) {
+            throw new IllegalArgumentException("BookId cannot be null");
+        }
+
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
-        cart.getCartItems().removeIf(item -> item.getBookId().equals(bookId));
-        cartRepository.save(cart);
+
+        // Find the CartItem to remove
+        Optional<CartItem> itemToRemove = cart.getCartItems().stream()
+                .filter(item -> bookId.equals(item.getBookId())) // Reverse order for null safety
+                .findFirst();
+
+        if (itemToRemove.isPresent()) {
+            cart.removeItem(itemToRemove.get()); // Use the removeItem method to maintain total price
+            cartRepository.save(cart); // Save the updated cart
+        } else {
+            throw new RuntimeException("CartItem not found in cart for bookId: " + bookId);
+        }
     }
+
 
     @Override
     public List<CartItem> getCartItems(Long userId) {
@@ -84,6 +116,7 @@ public class CartServiceImplementation implements CartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
         cart.getCartItems().clear();
+        cart.setTotalPrice(0);
         cartRepository.save(cart);
     }
 
