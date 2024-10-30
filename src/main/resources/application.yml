@@ -25,6 +25,7 @@ server:
       enabled: true
 logging:
   level:
+    org.springframework: DEBUG
     org.springframework.security: DEBUG
     org.hibernate: DEBUG
 

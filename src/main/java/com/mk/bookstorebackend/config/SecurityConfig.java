@@ -25,44 +25,56 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception {
+//        return http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(req ->
+//                        req.requestMatchers("/bookstore/api/v1/auth/*")
+//                                .permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/books/**")
+//                                .permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/books/**")
+//                                .hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/books/**")
+//                                .hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/books/**")
+//                                .hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/users/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/users/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/users/**")
+//                                .hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/cart/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/cart/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/cart/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/cart/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/orders/**")
+//                                .hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/orders/**").hasRole("ADMIN")
+////                               .requestMatchers("/test/v1/management/**").hasAnyRole(ADMIN.name(), MEMBER.name())
+//                                .anyRequest()
+//                                .authenticated())
+//                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .build();
+//    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/bookstore/api/v1/auth/*")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/books/**")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/books/**")
-                                .hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/books/**")
-                                .hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/books/**")
-                                .hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/users/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/users/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/users/**")
-                                .hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/cart/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/cart/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.PUT, "/bookstore/api/v1/cart/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.DELETE, "/bookstore/api/v1/cart/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.POST, "/bookstore/api/v1/orders/**")
-                                .hasAnyRole("ADMIN", "MEMBER")
-                                .requestMatchers(HttpMethod.GET, "/bookstore/api/v1/orders/**").hasRole("ADMIN")
-//                               .requestMatchers("/test/v1/management/**").hasAnyRole(ADMIN.name(), MEMBER.name())
-                                .anyRequest()
-                                .authenticated())
+                .authorizeHttpRequests(req -> req.anyRequest().permitAll()) // Allow all requests
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }
