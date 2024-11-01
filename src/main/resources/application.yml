@@ -25,8 +25,9 @@ server:
       enabled: true
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.hibernate: DEBUG
+#    org.springframework.security: DEBUG
+#    org.hibernate: DEBUG
+    com.zaxxer.hikari: DEBUG
 
 
 # Environment Variable for Frontend URL
